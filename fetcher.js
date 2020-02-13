@@ -1,5 +1,3 @@
-//6:00
-
 // Implement a small command line node app called fetcher.js which should take a URL as a command-line argument as well as a local file path and download the resource to the specified path.
 // Upon completion, it should print out a message like Downloaded and saved 1235 bytes to ./index.html.
 
@@ -17,8 +15,8 @@ const [URL, saveFile] = process.argv.slice(2, 4);
 // Create server connection
 request(URL, (error, response, body) => {
   if (error) throw error;
-
   if (response.statusCode === 200) {
+    //Code only proceeds if server responds with 200, else logs status code
     const writeToFile = file => {
       fs.writeFile(file, body, "utf8", () => {
         let stats = fs.statSync(file);
