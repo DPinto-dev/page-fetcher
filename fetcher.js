@@ -16,37 +16,43 @@ const [URL, saveFile] = process.argv.slice(2, 4);
 
 // Create server connection
 request(URL, (error, response, body) => {
-  const writeToFile = file => {
-    fs.writeFile(file, body, "utf8", () => {
-      let stats = fs.statSync(file);
-      console.log(`Downloaded and saved ${stats.size} bytes to ${file}`);
-      process.exit();
-    });
-  };
+  if (error) throw error;
 
-  fs.access(saveFile, err => {
-    if (!err) {
-      // if there's no error the file exists and we ask if user wants to rewrite
-      rl.question(
-        `The file ${saveFile} already exists. Do you want to overwrite it? Y or N ?\n`,
-        answer => {
-          if (answer.trim().toLowerCase() === "y") {
-            console.log(`The file ${saveFile} will be overwritten.`);
-            writeToFile(saveFile);
-            rl.close();
-          } else {
-            rl.question(
-              `Please specify a new filename and path:  `,
-              newFileName => {
-                writeToFile(newFileName);
-                rl.close();
-              }
-            );
+  if (response.statusCode === 200) {
+    const writeToFile = file => {
+      fs.writeFile(file, body, "utf8", () => {
+        let stats = fs.statSync(file);
+        console.log(`Downloaded and saved ${stats.size} bytes to ${file}`);
+        process.exit();
+      });
+    };
+
+    fs.access(saveFile, err => {
+      if (!err) {
+        // if there's no error the file exists and we ask if user wants to rewrite
+        rl.question(
+          `The file ${saveFile} already exists. Do you want to overwrite it? Y or N ?\n`,
+          answer => {
+            if (answer.trim().toLowerCase() === "y") {
+              console.log(`The file ${saveFile} will be overwritten.`);
+              writeToFile(saveFile);
+              rl.close();
+            } else {
+              rl.question(
+                `Please specify a new filename and path:  `,
+                newFileName => {
+                  writeToFile(newFileName);
+                  rl.close();
+                }
+              );
+            }
           }
-        }
-      );
-    } else {
-      writeToFile(saveFile);
-    }
-  });
+        );
+      } else {
+        writeToFile(saveFile);
+      }
+    });
+  } else {
+    console.log(response.statusCode);
+  }
 });
