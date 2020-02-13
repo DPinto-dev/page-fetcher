@@ -1,7 +1,6 @@
 {
   "name": "page-fetcher",
   "version": "1.0.0",
-  "description": "",
   "main": "fetcher.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,5 +18,6 @@
   "homepage": "https://github.com/DPintoLL/page-fetcher#readme",
   "devDependencies": {
     "request": "^2.88.2"
-  }
+  },
+  "description": ""
 }
